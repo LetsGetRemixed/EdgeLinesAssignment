@@ -4,22 +4,26 @@ import matplotlib.pyplot as plt
 from gradient_orientations import gradient_orientations
 
 def oriented_edges(img, sigma, threshold, direction, tolerance):
-    """
-    Detects oriented edges in a grayscale or color image.
+ 
+    blurred_img = cv.GaussianBlur(img, (0, 0), sigma)
+    
+    #gradient orientations
+    gradient_orientation = gradient_orientations(blurred_img)
+    
+    
+    #canny edges
+    canny_edges = cv.Canny(blurred_img, threshold, 2 * threshold)
+    
+    #mask for orien. and tollerance
+    valid_orientation_mask = np.logical_or(
+        np.abs(gradient_orientation - direction) <= tolerance,
+        np.abs(gradient_orientation - direction + 180) <= tolerance
+    )
+    
+    #result edge_img
+    edge_img = np.zeros_like(canny_edges)
+    edge_img[np.logical_and(canny_edges > 0, valid_orientation_mask)] = 255
+    
 
-    Parameters:
-    img (numpy.ndarray): The input image. If the image is in color, it will be converted to grayscale.
-    sigma (float): The standard deviation of the Gaussian filter used to blur the image.
-    threshold (float): The lower threshold for the Canny edge detector. The upper threshold is twice this value.
-    direction (float): The desired direction of the edges, in degrees. The function will detect edges whose direction
-        is within `tolerance` degrees from this direction.
-    tolerance (float): The tolerance in degrees for the edge direction. The function will detect edges whose direction
-        is within this tolerance from the `direction` parameter.
-
-    Returns:
-    numpy.ndarray: A binary image where the edge pixels are set to 255 and the non-edge pixels are set to 0.
-    """
-
-    # TODO: Your code here
 
     return edge_img
